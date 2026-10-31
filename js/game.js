@@ -1152,7 +1152,7 @@ function artFor(t) {
 }
 function makeTileEl(t, r, c) {
   const el = document.createElement('div');
-  el.className = 'tile' + (t.power ? ' power' : '') + (t.chain ? ' chained' : '') + (t.power === 'mH' ? ' dirH' : t.power === 'mV' ? ' dirV' : '') + (t.gold ? ' gold' : '') + (t.drop ? ' drop' : '') + (t.ev && EV_URI && !t.power && !t.rock && !t.drop ? ' ev' : '');
+  el.className = 'tile' + (t.rock ? ' block' : '') + (t.power ? ' power' : '') + (t.chain ? ' chained' : '') + (t.power === 'mH' ? ' dirH' : t.power === 'mV' ? ' dirV' : '') + (t.gold ? ' gold' : '') + (t.drop ? ' drop' : '') + (t.ev && EV_URI && !t.power && !t.rock && !t.drop ? ' ev' : '');
   el.style.backgroundImage = artFor(t);
   el.style.transform = pos(r, c);
   $('#board').appendChild(el);
@@ -1164,6 +1164,7 @@ function refreshArt(t) {
   if (!el) return;
   el.style.backgroundImage = artFor(t);
   el.classList.toggle('power', !!t.power);
+  el.classList.toggle('block', !!t.rock);
   el.classList.toggle('chained', !!t.chain);
   el.classList.toggle('dirH', t.power === 'mH');
   el.classList.toggle('dirV', t.power === 'mV');
@@ -2038,7 +2039,7 @@ async function forestaleStrike() {
     const t = b.grid[r][c];
     if (r > 0 && t && !t.rock && !t.power && !t.chain) cand.push([r, c]);
   }
-  const n = 2 + Math.floor((G.level.n / 5 - 1) / 2);
+  const n = Math.min(6, 2 + Math.floor((G.level.n / 5 - 1) / 2));   // oltre una certa soglia i sassi lanciati non aumentano più
   for (let i = 0; i < n && cand.length; i++) {
     const [r, c] = cand.splice(Math.floor(Math.random() * cand.length), 1)[0];
     const t = b.grid[r][c];
